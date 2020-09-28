@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_driver/flutter_driver.dart';
@@ -34,10 +33,8 @@ Future<void> main() async {
   ]);
   print('Starting test.');
   final FlutterDriver driver = await FlutterDriver.connect();
-  final String data = await driver.requestData(
-    null,
-    timeout: const Duration(minutes: 1),
-  );
+  final String result =
+      await driver.requestData(null, timeout: const Duration(minutes: 1));
   await driver.close();
   print('Test finished. Revoking camera permissions...');
   Process.runSync('adb', <String>[
@@ -54,7 +51,5 @@ Future<void> main() async {
     _examplePackage,
     'android.permission.RECORD_AUDIO'
   ]);
-
-  final Map<String, dynamic> result = jsonDecode(data);
-  exit(result['result'] == 'true' ? 0 : 1);
+  exit(result == 'pass' ? 0 : 1);
 }
